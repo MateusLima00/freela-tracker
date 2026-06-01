@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://freela-tracker.onrender.com/api/:path*"
+      "source": "/api/(.*)",
+      "destination": "https://freela-tracker.onrender.com/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
