@@ -71,3 +71,9 @@
 .textarea:focus { border-color: var(--color-primary); }
 .feedbackFooter { display: flex; align-items: center; justify-content: space-between; }
 .counter { font-size: 0.6875rem; color: var(--color-text-muted); }
+
+.errorMsg {
+  font-size: 0.8125rem;
+  color: var(--color-danger);
+  margin-top: 2px;
+}

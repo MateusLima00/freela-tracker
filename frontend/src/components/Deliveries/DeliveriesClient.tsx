@@ -21,6 +21,9 @@ export function DeliveriesClient({ projectId, canApprove }: { projectId: string;
   const [feedback, setFeedback] = useState('')
   const [busyId, setBusyId] = useState<string | null>(null)
 
+  /* erro inline por entrega */
+  const [actionError, setActionError] = useState<Record<string, string>>({})
+
   function load() {
     deliveryService.listForClient(projectId)
       .then((res) => setDeliveries(res.data.data))
@@ -41,7 +44,7 @@ export function DeliveriesClient({ projectId, canApprove }: { projectId: string;
       const res = await deliveryService.approve(deliveryId)
       patchDelivery(res.data.data)
     } catch (err) {
-      alert(apiErrorMessage(err, 'Erro ao aprovar.'))
+      setActionError((prev) => ({ ...prev, [deliveryId]: apiErrorMessage(err, 'Erro ao aprovar.') }))
     } finally {
       setBusyId(null)
     }
@@ -55,7 +58,7 @@ export function DeliveriesClient({ projectId, canApprove }: { projectId: string;
       patchDelivery(res.data.data)
       setFeedbackFor(null); setFeedback('')
     } catch (err) {
-      alert(apiErrorMessage(err, 'Erro ao solicitar alteração.'))
+      setActionError((prev) => ({ ...prev, [deliveryId]: apiErrorMessage(err, 'Erro ao solicitar alteração.') }))
     } finally {
       setBusyId(null)
     }
@@ -117,7 +120,10 @@ export function DeliveriesClient({ projectId, canApprove }: { projectId: string;
                     <div className={styles.actions}>
                       <button
                         className={styles.btnGhost}
-                        onClick={() => { setFeedbackFor(null); setFeedback('') }}
+                        onClick={() => {
+                          setFeedbackFor(null); setFeedback('')
+                          setActionError((prev) => { const n = { ...prev }; delete n[delivery.id]; return n })
+                        }}
                       >
                         Cancelar
                       </button>
@@ -150,6 +156,10 @@ export function DeliveriesClient({ projectId, canApprove }: { projectId: string;
                 </div>
               )
             ) : null}
+
+            {actionError[delivery.id] && (
+              <p className={styles.errorMsg}>{actionError[delivery.id]}</p>
+            )}
           </div>
         )
       })}

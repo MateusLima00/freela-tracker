@@ -28,6 +28,10 @@ export function DeliveriesAdmin({ projectId }: { projectId: string }) {
   /* upload de nova versão (por entrega) */
   const [versionBusyId, setVersionBusyId] = useState<string | null>(null)
 
+  /* erros inline */
+  const [createError, setCreateError] = useState('') // erro do formulário de criação
+  const [cardError, setCardError] = useState<Record<string, string>>({}) // erro por card, keyed pelo deliveryId
+
   function load() {
     deliveryService.listByProject(projectId)
       .then((res) => setDeliveries(res.data.data))
@@ -40,6 +44,7 @@ export function DeliveriesAdmin({ projectId }: { projectId: string }) {
   async function handleCreate(e: FormEvent) {
     e.preventDefault()
     if (!title.trim()) return
+    setCreateError('')
     setCreating(true)
     try {
       const res = await deliveryService.create(
@@ -51,7 +56,7 @@ export function DeliveriesAdmin({ projectId }: { projectId: string }) {
       setTitle(''); setDescription(''); setFiles([]); setShowForm(false)
       if (createInputRef.current) createInputRef.current.value = ''
     } catch (err) {
-      alert(apiErrorMessage(err, 'Erro ao criar entrega.'))
+      setCreateError(apiErrorMessage(err, 'Erro ao criar entrega.'))
     } finally {
       setCreating(false)
     }
@@ -64,7 +69,7 @@ export function DeliveriesAdmin({ projectId }: { projectId: string }) {
       const res = await deliveryService.addVersion(deliveryId, Array.from(fileList))
       setDeliveries((d) => d.map((item) => item.id === deliveryId ? res.data.data : item))
     } catch (err) {
-      alert(apiErrorMessage(err, 'Erro ao subir nova versão.'))
+      setCardError((prev) => ({ ...prev, [deliveryId]: apiErrorMessage(err, 'Erro ao subir nova versão.') }))
     } finally {
       setVersionBusyId(null)
     }
@@ -76,7 +81,7 @@ export function DeliveriesAdmin({ projectId }: { projectId: string }) {
       const res = await deliveryService.unlock(deliveryId)
       setDeliveries((d) => d.map((item) => item.id === deliveryId ? res.data.data : item))
     } catch (err) {
-      alert(apiErrorMessage(err, 'Erro ao desbloquear.'))
+      setCardError((prev) => ({ ...prev, [deliveryId]: apiErrorMessage(err, 'Erro ao desbloquear.') }))
     }
   }
 
@@ -86,7 +91,7 @@ export function DeliveriesAdmin({ projectId }: { projectId: string }) {
       await deliveryService.delete(deliveryId)
       setDeliveries((d) => d.filter((item) => item.id !== deliveryId))
     } catch (err) {
-      alert(apiErrorMessage(err, 'Erro ao excluir entrega.'))
+      setCardError((prev) => ({ ...prev, [deliveryId]: apiErrorMessage(err, 'Erro ao excluir entrega.') }))
     }
   }
 
@@ -98,7 +103,7 @@ export function DeliveriesAdmin({ projectId }: { projectId: string }) {
       <div className={styles.header}>
         <button
           className={styles.btnSecondary}
-          onClick={() => { setShowForm((v) => !v); setTitle(''); setDescription(''); setFiles([]) }}
+          onClick={() => { setShowForm((v) => !v); setTitle(''); setDescription(''); setFiles([]); setCreateError('') }}
         >
           {showForm ? 'Cancelar' : <><IconPlus size={15} /> Nova entrega</>}
         </button>
@@ -139,6 +144,7 @@ export function DeliveriesAdmin({ projectId }: { projectId: string }) {
               {creating ? 'Enviando...' : 'Criar entrega'}
             </button>
           </div>
+          {createError && <p className={styles.errorMsg}>{createError}</p>}
         </form>
       )}
 
@@ -205,6 +211,10 @@ export function DeliveriesAdmin({ projectId }: { projectId: string }) {
                   </div>
                 ))}
               </div>
+
+              {cardError[delivery.id] && (
+                <p className={styles.errorMsg}>{cardError[delivery.id]}</p>
+              )}
 
               {/* Subir nova versão — bloqueado quando a entrega está aprovada */}
               {!isLocked && (
