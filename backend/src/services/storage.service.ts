@@ -42,7 +42,14 @@ const cloudinaryStorage: ImageStorage = {
       const stream = cloudinary.uploader.upload_stream(
         { folder: CLOUD_FOLDER, resource_type: 'image', format: 'webp' },
         (error, result) => {
-          if (error || !result) return reject(error ?? new Error('Falha no upload Cloudinary'));
+          if (error || !result) {
+            // O erro do Cloudinary é um objeto simples ({ message, http_code }),
+            // não um Error — logamos o objeto cru e re-lançamos como Error real
+            // para que a mensagem chegue ao controller e ao frontend.
+            logger.error(`[storage] Cloudinary falhou: ${JSON.stringify(error)}`);
+            const detail = (error as { message?: string } | undefined)?.message ?? 'erro desconhecido';
+            return reject(new Error(`Falha no upload para o Cloudinary: ${detail}`));
+          }
           resolve(result.secure_url);
         },
       );

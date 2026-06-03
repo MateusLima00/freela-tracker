@@ -25,6 +25,11 @@ ensureUploadsDir();
 
 const app = express();
 
+// Atrás do proxy do Render (e do rewrite da Vercel): confia no primeiro proxy
+// para que req.ip / X-Forwarded-For sejam corretos e o express-rate-limit não
+// lance ERR_ERL_UNEXPECTED_X_FORWARDED_FOR.
+app.set('trust proxy', 1);
+
 app.use(helmetMiddleware);
 app.use(corsMiddleware);
 app.use(cookieParser());
