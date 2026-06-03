@@ -437,6 +437,43 @@
 
 .btnDelete:hover { color: var(--color-danger); }
 
+/* Botão "Concluir" / "Reabrir" da tarefa */
+.btnComplete,
+.btnReopen {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+
+.btnComplete {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: #4ade80;
+}
+
+.btnComplete:hover {
+  background: rgba(34, 197, 94, 0.22);
+  border-color: #22c55e;
+}
+
+.btnReopen {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.btnReopen:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary-light);
+}
+
 /* ── Header right (badge + menu) ── */
 .headerRight {
   display: flex;

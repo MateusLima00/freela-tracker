@@ -215,6 +215,11 @@ export function ClientProjectDetailPage() {
                       >
                         <span className={styles.taskIcon}>{TASK_STATUS_ICON[task.status]}</span>
                         <span className={styles.taskTitle}>{task.title}</span>
+                        {task.status === TaskStatus.DONE && (
+                          <span className={styles.taskDoneDate}>
+                            Concluída em {formatDate(task.updatedAt)}
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>

@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   IconDots, IconPencil, IconArchive, IconArchiveOff, IconTrash,
+  IconCheck, IconRotateClockwise,
 } from '@tabler/icons-react'
 import { projectService } from '../../../services/project.service'
 import { taskService } from '../../../services/task.service'
@@ -225,6 +226,18 @@ export function ProjectDetailPage() {
   async function handleToggleTask(taskId: string, status: TaskStatus) {
     try {
       const res = await taskService.update(taskId, { status: NEXT_STATUS[status] })
+      setProject((p) =>
+        p ? { ...p, tasks: p.tasks.map((t) => t.id === taskId ? res.data.data : t) } : p
+      )
+    } catch {
+      alert('Erro ao atualizar tarefa.')
+    }
+  }
+
+  // Marca a tarefa com um status específico (botão "Concluir" / "Reabrir").
+  async function handleSetTaskStatus(taskId: string, status: TaskStatus) {
+    try {
+      const res = await taskService.update(taskId, { status })
       setProject((p) =>
         p ? { ...p, tasks: p.tasks.map((t) => t.id === taskId ? res.data.data : t) } : p
       )
@@ -468,6 +481,23 @@ export function ProjectDetailPage() {
                     <span className={styles.taskDue} title="Prazo da tarefa">{formatDate(task.dueDate)}</span>
                   )}
                   <Badge value={task.priority} />
+                  {task.status === TaskStatus.DONE ? (
+                    <button
+                      onClick={() => handleSetTaskStatus(task.id, TaskStatus.TODO)}
+                      className={styles.btnReopen}
+                      title="Reabrir tarefa"
+                    >
+                      <IconRotateClockwise size={13} /> Reabrir
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleSetTaskStatus(task.id, TaskStatus.DONE)}
+                      className={styles.btnComplete}
+                      title="Marcar como concluída"
+                    >
+                      <IconCheck size={13} /> Concluir
+                    </button>
+                  )}
                   <button onClick={() => handleDeleteTask(task.id)} className={styles.btnDelete}>×</button>
                 </div>
               ))}

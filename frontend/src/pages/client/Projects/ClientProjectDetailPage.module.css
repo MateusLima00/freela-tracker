@@ -266,6 +266,15 @@
   color: var(--color-success);
 }
 
+/* Data de conclusão (alinhada à direita do row) */
+.taskDoneDate {
+  margin-left: auto;
+  font-size: 0.6875rem;
+  color: var(--color-success);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 /* ── Feed de atualizações ── */
 .feed {
   display: flex;
