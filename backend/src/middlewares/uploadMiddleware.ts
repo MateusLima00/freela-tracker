@@ -26,20 +26,10 @@ const _upload = multer({
  * A assinatura Express (req, res, next) é idêntica — nenhuma rota precisa mudar.
  */
 export function uploadDeliveryImages(req: Request, res: Response, next: NextFunction): void {
-  // DIAGNÓSTICO: registra o que de fato chega na requisição de upload.
-  logger.info('[upload] recebido', {
-    contentType: req.headers['content-type'] ?? '(ausente)',
-    contentLength: req.headers['content-length'] ?? '(ausente)',
-  });
-
   _upload(req, res, (err) => {
-    if (!err) {
-      const count = Array.isArray(req.files) ? req.files.length : 0;
-      logger.info(`[upload] multer OK — ${count} arquivo(s) recebido(s)`);
-      return next();
-    }
+    if (!err) return next();
 
-    // DIAGNÓSTICO: imprime o tipo e a mensagem do erro do multer/fileFilter.
+    // Loga a causa real de falhas de upload (multer/fileFilter) para diagnóstico.
     logger.error(`[upload] erro: ${err?.constructor?.name} — ${err instanceof Error ? err.message : String(err)}`);
 
     if (err instanceof multer.MulterError) {

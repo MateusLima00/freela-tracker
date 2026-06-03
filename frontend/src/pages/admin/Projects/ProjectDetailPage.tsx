@@ -7,6 +7,8 @@ import {
 import { projectService } from '../../../services/project.service'
 import { taskService } from '../../../services/task.service'
 import { updateService } from '../../../services/update.service'
+import { adminClientService } from '../../../services/adminClient.service'
+import type { IClientWithCount } from '../../../services/adminClient.service'
 import type { IProject, IProjectUpdate } from '../../../interfaces'
 import { TaskStatus, Priority, ProjectStatus } from '../../../enums'
 import { Badge } from '../../../components/Badge/Badge'
@@ -55,6 +57,9 @@ export function ProjectDetailPage() {
   const [isLoading,   setIsLoading]   = useState(true)
   const [error,       setError]       = useState('')
 
+  /* lista de clientes (para vincular ao projeto) */
+  const [clients, setClients] = useState<IClientWithCount[]>([])
+
   /* action menu */
   const [showMenu, setShowMenu] = useState(false)
 
@@ -66,6 +71,7 @@ export function ProjectDetailPage() {
   const [editProgress,   setEditProgress]   = useState(0)
   const [editDeadline,   setEditDeadline]   = useState('')
   const [editEstimated,  setEditEstimated]  = useState('')
+  const [editClientId,   setEditClientId]   = useState('')
   const [editBusy,       setEditBusy]       = useState(false)
 
   /* delete modal */
@@ -107,6 +113,13 @@ export function ProjectDetailPage() {
       .finally(() => setIsLoading(false))
   }, [id])
 
+  /* lista de clientes para o seletor do modal de edição */
+  useEffect(() => {
+    adminClientService.list()
+      .then((res) => setClients(res.data.data))
+      .catch(() => {})
+  }, [])
+
   // Recarrega o projeto após o timer mudar (totalTime e feed de updates mudam no stop)
   async function reloadProject() {
     if (!id) return
@@ -127,6 +140,7 @@ export function ProjectDetailPage() {
     setEditProgress(project.progress)
     setEditDeadline(project.deadline ? project.deadline.split('T')[0] : '')
     setEditEstimated(project.estimatedHours != null ? String(project.estimatedHours) : '')
+    setEditClientId(project.clientId ?? '')
     setShowMenu(false)
     setShowEditModal(true)
   }
@@ -144,6 +158,7 @@ export function ProjectDetailPage() {
           ? new Date(editDeadline + 'T12:00:00').toISOString()
           : null,
         estimatedHours: editEstimated.trim() === '' ? null : Number(editEstimated),
+        clientId:    editClientId || null,
       })
       setProject(res.data.data)
       setShowEditModal(false)
@@ -587,6 +602,19 @@ export function ProjectDetailPage() {
                   onChange={(e) => setEditDesc(e.target.value)}
                   rows={3}
                 />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>Cliente</label>
+                <select
+                  className={styles.select}
+                  value={editClientId}
+                  onChange={(e) => setEditClientId(e.target.value)}
+                >
+                  <option value="">Sem cliente</option>
+                  {clients.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
               </div>
               <div className={styles.fieldRow}>
                 <div className={styles.field}>

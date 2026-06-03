@@ -8,6 +8,8 @@ export interface CreateProjectDTO {
 export interface UpdateProjectDTO {
   title?: string;
   description?: string;
+  // string = vincular cliente, null = desvincular, ausente = não altera
+  clientId?: string | null;
   progress?: number;
   status?: 'PENDING' | 'IN_PROGRESS' | 'AWAITING_CLIENT' | 'COMPLETED' | 'PAUSED' | 'ARCHIVED';
   deadline?: string | null;

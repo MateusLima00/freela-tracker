@@ -10,6 +10,8 @@ export const createProjectSchema = z.object({
 export const updateProjectSchema = z.object({
   title: z.string().min(2).max(200).optional(),
   description: z.string().max(5000).optional(),
+  // Vincular (string), desvincular (null) ou não mexer (ausente) o cliente do projeto.
+  clientId: z.string().min(1).max(100).nullable().optional(),
   progress: z.number().min(0).max(100).optional(),
   status: z.enum(['PENDING', 'IN_PROGRESS', 'AWAITING_CLIENT', 'COMPLETED', 'PAUSED', 'ARCHIVED']).optional(),
   deadline: z.string().datetime({ offset: true }).nullish(),

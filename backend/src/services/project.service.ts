@@ -47,18 +47,25 @@ export const projectService = {
     const project = await projectRepository.findById(id);
     if (!project) throw new Error('Projeto não encontrado');
 
+    // Ao vincular um cliente (clientId string), valida que ele existe.
+    // clientId null = desvincular; ausente = não altera.
+    if (data.clientId) {
+      const client = await clientRepository.findById(data.clientId);
+      if (!client) throw new Error('Cliente não encontrado');
+    }
+
     const updated = await projectRepository.update(id, data);
 
     // Notifica o cliente quando o status muda (respeita receiveEmailOnUpdate).
     const statusChanged = data.status !== undefined && data.status !== project.status;
-    if (statusChanged && project.clientId) {
-      const client = await clientRepository.findById(project.clientId);
+    if (statusChanged && updated.clientId) {
+      const client = await clientRepository.findById(updated.clientId);
       if (client) {
         const label = STATUS_LABELS[updated.status] ?? updated.status;
         emailService.statusUpdate(client, id, project.title, label);
       }
     }
-    return updated;
+    return withClientName(updated);
   },
 
   async delete(id: string) {

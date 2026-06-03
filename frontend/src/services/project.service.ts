@@ -19,6 +19,8 @@ interface UpdateProjectData {
   status?: ProjectStatus
   deadline?: string | null
   estimatedHours?: number | null
+  // string = vincular cliente, null = desvincular
+  clientId?: string | null
   // financeiro
   billingType?: BillingType
   totalValue?: number | null

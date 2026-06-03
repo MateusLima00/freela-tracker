@@ -66,6 +66,14 @@ export const projectRepository = {
             ? null
             : new Date(data.deadline),
       },
+      // Retorna o projeto completo (mesma forma do findById) para que o frontend
+      // não receba um objeto "pelado" sem tasks/updates/timerSessions ao salvar.
+      include: {
+        client: { select: { id: true, firstName: true, lastName: true, email: true } },
+        tasks: { orderBy: { createdAt: 'desc' } },
+        updates: { orderBy: { createdAt: 'desc' } },
+        timerSessions: { orderBy: { startTime: 'desc' } },
+      },
     }),
 
   delete: (id: string) =>
