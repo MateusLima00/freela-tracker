@@ -4,12 +4,18 @@ import { success, error } from '../utils/response.util';
 import { auditService } from '../services/audit.service';
 import { processAndStoreImages } from '../utils/image.util';
 import { IAuthRequest } from '../interfaces';
+import { logger } from '../config/logger';
 
 const NOT_FOUND = ['Entrega não encontrada', 'Projeto não encontrado'];
 
 // Mapeia a mensagem de erro do serviço para o status HTTP adequado.
 function fail(res: Response, err: unknown, fallback: string) {
   const message = err instanceof Error ? err.message : fallback;
+  // Loga a causa real (com stack) para diagnóstico nos logs do servidor —
+  // a resposta HTTP só carrega a mensagem, não o stack.
+  logger.error(`[delivery] ${fallback}: ${message}`, {
+    stack: err instanceof Error ? err.stack : undefined,
+  });
   if (NOT_FOUND.includes(message)) return error(res, message, 404);
   if (message === 'Acesso não permitido') return error(res, message, 403);
   return error(res, message, 400);

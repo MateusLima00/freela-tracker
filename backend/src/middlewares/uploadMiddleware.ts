@@ -1,5 +1,6 @@
 import multer from 'multer';
 import type { Request, Response, NextFunction } from 'express';
+import { logger } from '../config/logger';
 
 // Upload de imagens de entregas (Fase 7).
 // Usamos memoryStorage: o arquivo nunca toca o disco em sua forma original — o
@@ -25,8 +26,21 @@ const _upload = multer({
  * A assinatura Express (req, res, next) é idêntica — nenhuma rota precisa mudar.
  */
 export function uploadDeliveryImages(req: Request, res: Response, next: NextFunction): void {
+  // DIAGNÓSTICO: registra o que de fato chega na requisição de upload.
+  logger.info('[upload] recebido', {
+    contentType: req.headers['content-type'] ?? '(ausente)',
+    contentLength: req.headers['content-length'] ?? '(ausente)',
+  });
+
   _upload(req, res, (err) => {
-    if (!err) return next();
+    if (!err) {
+      const count = Array.isArray(req.files) ? req.files.length : 0;
+      logger.info(`[upload] multer OK — ${count} arquivo(s) recebido(s)`);
+      return next();
+    }
+
+    // DIAGNÓSTICO: imprime o tipo e a mensagem do erro do multer/fileFilter.
+    logger.error(`[upload] erro: ${err?.constructor?.name} — ${err instanceof Error ? err.message : String(err)}`);
 
     if (err instanceof multer.MulterError) {
       const messages: Partial<Record<multer.MulterError['code'], string>> = {
