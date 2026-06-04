@@ -6,10 +6,11 @@ import styles from './LoginPage.module.css'
 
 type Mode = 'admin' | 'client'
 
-export function LoginPage() {
+// variant 'client' = portal exclusivo do cliente (sem o toggle de admin)
+export function LoginPage({ variant = 'full' }: { variant?: 'full' | 'client' }) {
   const { loginAdmin, loginClient } = useAuth()
   const navigate = useNavigate()
-  const [mode, setMode] = useState<Mode>('admin')
+  const [mode, setMode] = useState<Mode>(variant === 'client' ? 'client' : 'admin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -45,25 +46,29 @@ export function LoginPage() {
         <div className={styles.header}>
           <div className={styles.logoMark}>FT</div>
           <h1 className={styles.title}>FreelaTracker</h1>
-          <p className={styles.subtitle}>Acesse sua conta</p>
+          <p className={styles.subtitle}>
+            {variant === 'client' ? 'Portal do Cliente' : 'Acesse sua conta'}
+          </p>
         </div>
 
-        <div className={styles.toggle} role="tablist">
-          <button
-            type="button"
-            className={`${styles.toggleBtn} ${mode === 'admin' ? styles.toggleBtnActive : ''}`}
-            onClick={() => setMode('admin')}
-          >
-            Sou admin
-          </button>
-          <button
-            type="button"
-            className={`${styles.toggleBtn} ${mode === 'client' ? styles.toggleBtnActive : ''}`}
-            onClick={() => setMode('client')}
-          >
-            Sou cliente
-          </button>
-        </div>
+        {variant === 'full' && (
+          <div className={styles.toggle} role="tablist">
+            <button
+              type="button"
+              className={`${styles.toggleBtn} ${mode === 'admin' ? styles.toggleBtnActive : ''}`}
+              onClick={() => setMode('admin')}
+            >
+              Sou admin
+            </button>
+            <button
+              type="button"
+              className={`${styles.toggleBtn} ${mode === 'client' ? styles.toggleBtnActive : ''}`}
+              onClick={() => setMode('client')}
+            >
+              Sou cliente
+            </button>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.field}>

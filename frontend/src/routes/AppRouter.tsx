@@ -45,7 +45,7 @@ function ClientRoute({ children }: { children: React.ReactNode }) {
 function ChangePasswordRoute() {
   const { user, isLoading } = useAuth()
   if (isLoading) return null
-  if (!user || user.kind !== 'client') return <Navigate to="/login" replace />
+  if (!user || user.kind !== 'client') return <Navigate to="/portal" replace />
   if (!user.mustChangePassword) return <Navigate to="/client/projects" replace />
   return <ChangePasswordPage />
 }
@@ -58,6 +58,7 @@ export function AppRouter() {
       <Routes>
         <Route path="/" element={<RootRedirect />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/portal" element={<LoginPage variant="client" />} />
         <Route path="/client/change-password" element={<ChangePasswordRoute />} />
 
         {/* ── Admin ── */}

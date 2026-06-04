@@ -12,7 +12,7 @@ export function PrivateRoute({ children, kind }: PrivateRouteProps) {
 
   if (isLoading) return null
 
-  if (!user) return <Navigate to="/login" replace />
+  if (!user) return <Navigate to={kind === 'client' ? '/portal' : '/login'} replace />
 
   if (user.kind !== kind) {
     return <Navigate to={user.kind === 'admin' ? '/dashboard' : '/client/projects'} replace />

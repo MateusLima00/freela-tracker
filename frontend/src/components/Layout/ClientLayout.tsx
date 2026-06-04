@@ -9,7 +9,7 @@ export function ClientLayout({ children }: { children: ReactNode }) {
 
   async function handleLogout() {
     await logout()
-    navigate('/login')
+    navigate('/portal')
   }
 
   return (
