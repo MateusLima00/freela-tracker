@@ -275,8 +275,11 @@ function CreateClientModal({ onClose, onCreated }: CreateClientModalProps) {
   }
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+    <div
+      className={styles.overlay}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div className={styles.modal}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Novo Cliente</h2>
           <button className={styles.btnClose} onClick={onClose}>×</button>

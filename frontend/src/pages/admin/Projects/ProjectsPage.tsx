@@ -198,8 +198,11 @@ export function ProjectsPage() {
 
       {/* Delete Confirmation Modal */}
       {projectToDelete && (
-        <div className={styles.overlay} onClick={() => setProjectToDelete(null)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.overlay}
+          onClick={(e) => { if (e.target === e.currentTarget) setProjectToDelete(null) }}
+        >
+          <div className={styles.modal}>
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>Excluir projeto</h2>
               <button className={styles.btnClose} onClick={() => setProjectToDelete(null)}>×</button>
@@ -283,8 +286,11 @@ function CreateProjectModal({ onClose, onCreated }: CreateProjectModalProps) {
   }
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+    <div
+      className={styles.overlay}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div className={styles.modal}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Novo projeto</h2>
           <button className={styles.btnClose} onClick={onClose}>×</button>

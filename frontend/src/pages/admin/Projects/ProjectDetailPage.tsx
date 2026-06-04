@@ -608,8 +608,11 @@ export function ProjectDetailPage() {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className={styles.overlay} onClick={() => setShowEditModal(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.overlay}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowEditModal(false) }}
+        >
+          <div className={styles.modal}>
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>Editar projeto</h2>
               <button className={styles.btnClose} onClick={() => setShowEditModal(false)}>×</button>
@@ -713,8 +716,11 @@ export function ProjectDetailPage() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className={styles.overlay} onClick={() => setShowDeleteModal(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.overlay}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowDeleteModal(false) }}
+        >
+          <div className={styles.modal}>
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>Excluir projeto</h2>
               <button className={styles.btnClose} onClick={() => setShowDeleteModal(false)}>×</button>

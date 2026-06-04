@@ -174,8 +174,11 @@ export function TimerWidget({ fixedProjectId, onChange }: TimerWidgetProps) {
         </div>
 
         {showStop && (
-          <div className={styles.overlay} onClick={() => !busy && setShowStop(false)}>
-            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles.overlay}
+            onClick={(e) => { if (e.target === e.currentTarget && !busy) setShowStop(false) }}
+          >
+            <div className={styles.modal}>
               <h3 className={styles.modalTitle}>Encerrar sessão</h3>
               <p className={styles.modalSub}>
                 Tempo registrado: <strong>{formatTime(elapsed)}</strong>. Descreva o que foi feito —
