@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import styles from './ClientLayout.module.css'
 
 export function ClientLayout({ children }: { children: ReactNode }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   async function handleLogout() {
     await logout()
@@ -39,7 +40,7 @@ export function ClientLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className={styles.main}>
+      <main key={location.pathname} className={`${styles.main} animateIn`}>
         {children}
       </main>
     </div>

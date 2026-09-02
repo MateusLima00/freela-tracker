@@ -57,7 +57,7 @@
 }
 
 .tableRow:last-child { border-bottom: none; }
-.tableRow:hover { background: rgba(255,255,255,0.03); }
+.tableRow:hover { background: var(--color-primary-subtle); }
 
 /* ── Células ─────────────────────────────────────────────────────── */
 .clientCell {

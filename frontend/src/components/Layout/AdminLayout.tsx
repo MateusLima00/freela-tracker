@@ -124,7 +124,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* ── Conteúdo principal ── */}
-      <main className={styles.main}>
+      <main key={location.pathname} className={`${styles.main} animateIn`}>
         {children}
       </main>
     </div>

@@ -31,11 +31,11 @@
   border-radius: var(--radius-md);
   font-size: 0.875rem;
   font-weight: 600;
-  transition: background-color var(--transition);
+  transition: background-color var(--transition), box-shadow var(--transition);
   cursor: pointer;
 }
 
-.btnPrimary:hover { background: var(--color-primary-dark); }
+.btnPrimary:hover { background: var(--color-primary-dark); box-shadow: var(--shadow-glow); }
 
 /* ── Tabs ── */
 .tabs {
@@ -118,7 +118,7 @@
 
 .tableRow:last-child { border-bottom: none; }
 
-.tableRow:hover { background: rgb(255 255 255 / 0.02); }
+.tableRow:hover { background: var(--color-primary-subtle); }
 
 .projectName {
   font-size: 0.875rem;

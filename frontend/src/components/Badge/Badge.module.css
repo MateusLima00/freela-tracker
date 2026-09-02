@@ -9,6 +9,7 @@
   white-space: nowrap;
   border: 1px solid transparent;
   line-height: 1.4;
+  transition: background-color var(--transition), border-color var(--transition), transform var(--transition-fast);
 }
 
 /* Status: fundo com 12% de opacidade + texto na cor sólida + borda sutil

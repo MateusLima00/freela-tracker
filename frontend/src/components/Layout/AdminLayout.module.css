@@ -82,6 +82,7 @@
 }
 
 .navItem {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
@@ -90,29 +91,53 @@
   color: var(--color-text-muted);
   font-size: 0.875rem;
   font-weight: 500;
-  transition: all var(--transition);
+  transition: background-color var(--transition), color var(--transition), transform var(--transition-fast);
   white-space: nowrap;
 }
 
 .navItem:hover {
   background-color: rgb(255 255 255 / 0.05);
   color: var(--color-text);
+  transform: translateX(2px);
 }
 
 .navItemActive {
-  background-color: var(--color-primary);
-  color: white;
+  background-color: var(--color-primary-subtle);
+  color: var(--color-text);
 }
 
 .navItemActive:hover {
-  background-color: var(--color-primary-dark);
-  color: white;
+  background-color: var(--color-primary-subtle);
+  color: var(--color-text);
+  transform: none;
+}
+
+/* Indicador ativo: barra fina à esquerda, estilo Linear */
+.navItemActive::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 999px;
+  background: var(--color-primary);
+}
+
+.navItemActive .navIcon {
+  color: var(--color-primary);
 }
 
 .navIcon {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  transition: color var(--transition), transform var(--transition-fast);
+}
+
+.navItem:hover .navIcon {
+  transform: scale(1.06);
 }
 
 .navLabel { white-space: nowrap; }
@@ -176,7 +201,7 @@
   background: transparent;
   color: var(--color-text-muted);
   font-size: 0.813rem;
-  transition: all var(--transition);
+  transition: border-color var(--transition), color var(--transition);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -324,7 +349,7 @@
     background: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(2px);
     z-index: 190;
-    animation: fadeIn 0.2s ease;
+    animation: fadeIn var(--transition-slow) both;
   }
 
   @keyframes fadeIn {
@@ -337,7 +362,7 @@
     transform: translateX(-100%);
     z-index: 300;
     width: var(--sidebar-width);
-    transition: transform 0.25s ease;
+    transition: transform var(--transition-slow);
     box-shadow: 4px 0 24px rgba(0,0,0,0.4);
   }
 
